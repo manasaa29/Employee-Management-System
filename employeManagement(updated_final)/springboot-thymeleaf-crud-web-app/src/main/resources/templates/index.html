@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        /* Add your custom CSS here */
+        body {
+            background-color:rgb(250,225,255);
+        }
+        h2 {
+            color: white;
+            margin-top: 20px;
+        }
+        table {
+            margin-top: 20px;
+        }
+        .btn-primary, .btn-danger {
+            margin-right: 5px;
+        }
+        .pagination {
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .pagination span {
+            margin: 0 5px;
+            padding: 5px 10px;
+            color: #6c757d;
+        }
+        .pagination a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Employee List</h2>
+        <a class="btn btn-primary mb-2" th:href="@{/showNewEmployeeForm}">Add Employee</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th th:href="@{${sortField=='id' ? reverseSortDir : sortDir}}">ID</th>
+                    <th th:href="@{${sortField=='name' ? reverseSortDir : sortDir}}">Name</th>
+                    <th th:href="@{${sortField=='designation' ? reverseSortDir : sortDir}}">Designation</th>
+                    <th th:href="@{${sortField=='department' ? reverseSortDir : sortDir}}">Department</th>
+                    <th th:href="@{${sortField=='idNumber' ? reverseSortDir : sortDir}}">ID Number</th>
+                    <th th:href="@{${sortField=='address' ? reverseSortDir : sortDir}}">Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="employee : ${listEmployees}">
+                    <td th:text="${employee.id}"></td>
+                    <td th:text="${employee.name}"></td>
+                    <td th:text="${employee.designation}"></td>
+                    <td th:text="${employee.department}"></td>
+                    <td th:text="${employee.idNumber}"></td>
+                    <td th:text="${employee.address}"></td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" th:href="@{/showFormForUpdate/{id}(id=${employee.id})}">Update</a>
+                        <a class="btn btn-danger btn-sm" th:href="@{/deleteEmployee/{id}(id=${employee.id})}">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:if="${totalPages > 1}">
+            <div class="row col-sm-10 pagination">
+                <div class="col-sm-2">
+                    Total Rows: [[${totalItems}]]
+                </div>
+                <div class="col-sm-1">
+                    <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                        <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                        <span th:unless="${currentPage != i}">[[${i}]]</span>
+                    &nbsp; &nbsp;
+                    </span>
+                </div>
+                <div class="col-sm-1">
+                    <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                    <span th:unless="${currentPage < totalPages}">Next</span>
+                </div>
+                <div class="col-sm-1">
+                    <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                    <span th:unless="${currentPage < totalPages}">Last</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
